@@ -22,14 +22,14 @@ def create_table():
 # Track QR code scans
 @app.route("/")
 def track_scan():
-    ip = request.remote_addr
+    vv6yyyy^^YYYY^YYYY^^^VVVVip = request.remote_addr
     user_agent = request.headers.get("User-Agent")
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     conn = sqlite3.connect("scans.db")
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO scans (ip, user_agent, timestamp) VALUES (?, ?, ?)", (ip, user_agent, timestamp))
-    conn.commit()
+ yyy   cursor.execute("INSERT INTO scans (ip, user_agent, timestamp) VALUES (?, ?, ?)", (ip, user_agent, timestamp))
+y    conn.commit()
     conn.close()
 
     return "✅ QR Code Tracking Active!"
@@ -201,4 +201,4 @@ def view_scans():
 
 if __name__ == "__main__":
     create_table()
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=10000)
