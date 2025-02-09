@@ -1,44 +1,51 @@
-from flask import Flask, request
-
+from flask import Flask, request, jsonify, render_template
 import sqlite3
 import datetime
 
 app = Flask(__name__)
 
-# Function to log the scan
-def log_scan(ip, user_agent):
+# Create a database table for scans
+def create_table():
     conn = sqlite3.connect("scans.db")
     cursor = conn.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS scans (id INTEGER PRIMARY KEY, ip TEXT, user_agent TEXT, timestamp TEXT)")
-    cursor.execute("INSERT INTO scans (ip, user_agent, timestamp) VALUES (?, ?, ?)",
-                   (ip, user_agent, datetime.datetime.now()))
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS scans (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip TEXT,
+            user_agent TEXT,
+            timestamp TEXT
+        )
+    ''')
     conn.commit()
     conn.close()
 
+# Track each scan
 @app.route("/")
-def home():
+def track_scan():
     ip = request.remote_addr  # Get visitor's IP
     user_agent = request.headers.get("User-Agent")  # Get device info
-    log_scan(ip, user_agent)  # Log the scan
-    return "<h1>Welcome! Your scan has been recorded.</h1>"
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-@app.route("/logs")
-def show_logs():
+    # Store in database
     conn = sqlite3.connect("scans.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM scans")
-    logs = cursor.fetchall()
+    cursor.execute("INSERT INTO scans (ip, user_agent, timestamp) VALUES (?, ?, ?)", (ip, user_agent, timestamp))
+    conn.commit()
     conn.close()
 
-    html = "<h1>Scan Logs</h1><table border='1'><tr><th>ID</th><th>IP</th><th>Device</th><th>Time</th></tr>"
-    for log in logs:
-        html += f"<tr><td>{log[0]}</td><td>{log[1]}</td><td>{log[2]}</td><td>{log[3]}</td></tr>"
-    html += "</table>"
+    return "✅ Scan recorded! Thank you for visiting!"
 
-    return html
+# View scan history
+@app.route("/scans")
+def view_scans():
+    conn = sqlite3.connect("scans.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM scans ORDER BY timestamp DESC")
+    data = cursor.fetchall()
+    conn.close()
+
+    return jsonify(data)
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))  # Use port 5000 locally, otherwise get from env
-    app.run(host="0.0.0.0", port=port)
-    
+    create_table()
+    app.run(debug=True)
