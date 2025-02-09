@@ -27,9 +27,8 @@ def track_scan():
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     conn = sqlite3.connect("scans.db")
-    cursor = conn.cursor()
- yyy   cursor.execute("INSERT INTO scans (ip, user_agent, timestamp) VALUES (?, ?, ?)", (ip, user_agent, timestamp))
-y    conn.commit()
+    cursor = conn.cursor()   cursor.execute("INSERT INTO scans (ip, user_agent, timestamp) VALUES (?, ?, ?)", (ip, user_agent, timestamp))
+    conn.commit()
     conn.close()
 
     return "✅ QR Code Tracking Active!"
