@@ -74,7 +74,8 @@ def view_scans():
 
 if __name__ == "__main__":
     create_table()
-    app.run(debug=True, host="0.0.0.0", port=10000)from flask import Flask, request, jsonify, render_template_string
+    app.run(debug=True, host="0.0.0.0", port=10000)
+from flask import Flask, request, jsonify, render_template_string
 import sqlite3
 import datetime
 
