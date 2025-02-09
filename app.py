@@ -1,8 +1,13 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template
 import sqlite3
 import datetime
 
 app = Flask(__name__)
+
+# Your existing functions and routes...
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=10000)  # Corrected version
 
 # Create database table
 def create_table():
