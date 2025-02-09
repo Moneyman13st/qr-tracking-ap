@@ -22,7 +22,7 @@ def create_table():
 # Track QR code scans
 @app.route("/")
 def track_scan():
-    vv6yyyy^^YYYY^YYYY^^^VVVVip = request.remote_addr
+    ip = request.remote_addr
     user_agent = request.headers.get("User-Agent")
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
